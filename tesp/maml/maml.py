@@ -76,7 +76,7 @@ DEFAULT_CONFIG = merge_dicts(
         "sample_batch_size": 200,
         "batch_mode": "complete_episodes",
         "observation_filter": "NoFilter",
-        "num_workers": 20,
+        "num_workers": 4,
         "num_envs_per_worker": 25,
         "tf_session_args": {
             "intra_op_parallelism_threads": 4,
@@ -197,6 +197,7 @@ class MAMLAgent(Agent):
         if self.config["validation"]:
             if self.config["validation_freq"] == "auto":
                 if self._iteration <= 200:
+                    validation_freq = 100
                     validation_freq = 100
                 else:
                     validation_freq = 25

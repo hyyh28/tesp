@@ -24,14 +24,16 @@ from rllib_models.rllib_maesn import RLlibMAESN
 from rllib_models.rllib_tesp import RLlibTESP
 from rllib_models.rllib_tesp_with_adap_policy import RLlibTESPWithAdapPolicy
 
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--env", default="wheeled",
+parser.add_argument("--env", default="ant",
                     choices=["wheeled",
                              "ant",
                              "reacher_2-link",
                              "reacher_4-link"])
-parser.add_argument("--alg", default="tesp",
+parser.add_argument("--alg", default="maml",
                     choices=["maml",
                              "meta-sgd",
                              "maesn",
@@ -42,8 +44,8 @@ args = parser.parse_args()
 env_name = args.env
 alg_name = args.alg
 
-# ray.init()
-ray.init(redis_address="192.168.12.190:32222")
+ray.init()
+# ray.init(redis_address="192.168.12.190:32222")
 
 if env_name == "wheeled":
     from envs.mujoco.wheeled import WheeledEnv
@@ -136,9 +138,9 @@ for idx, agent_cls in enumerate(all_agent_cls):
             experiment_name: {
                 "run": agent_cls._agent_name,
                 "env": env_cls.__name__,
-                "stop": {"training_iteration": 2},
+                "stop": {"training_iteration": 800},
                 "config": config,
-                "local_dir": "/tmp/ray_results",
+                "local_dir": "home/hua/tesp/ray_results",
                 "max_failures": 0,
             }
         }
